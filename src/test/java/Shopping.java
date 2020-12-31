@@ -36,7 +36,7 @@ public class Shopping {
     }
 
     @Test
-    public void test(){
+    public void T_shirts() throws InterruptedException {
         driver.manage().window().maximize();
         driver.navigate().to("http://automationpractice.com/index.php");
         String home =driver.getCurrentUrl();
@@ -129,16 +129,19 @@ public class Shopping {
         wait.until(ExpectedConditions.visibilityOf(checkout));
         js.executeScript("arguments[0].scrollIntoView();",checkout );
         js.executeScript("arguments[0].click();", checkout);
+        String newEmail = "kavtaradzeluka2021@gmail.com";
         try {
             //CREATE AN ACCOUNT
+            driver.navigate().refresh();
             WebElement Email_address = driver.findElement(By.id("email_create"));
-            Email_address.sendKeys("lukakavtaradze2001@gmail.com");
+            Email_address.sendKeys(newEmail);
+            Email_address.submit();
+            wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("SubmitCreate"))));
             WebElement Submit= driver.findElement(By.id("SubmitCreate"));
-            Submit.click();
-            WebElement Mr =driver.findElement(By.id("id_gender1"));
-            wait.until(ExpectedConditions.visibilityOf(Mr));
-            Mr.click();
+            js.executeScript("arguments[0].click();", Submit);
+            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.id("submitAccount")));
             WebElement First_name = driver.findElement(By.name("customer_firstname"));
+            js.executeScript("arguments[0].scrollIntoView();",First_name );
             First_name.sendKeys("Luka");
             WebElement Last_name = driver.findElement(By.name("customer_lastname"));
             Last_name.sendKeys("Kavtaradze");
@@ -151,25 +154,28 @@ public class Shopping {
             Select State = new Select(driver.findElement(By.id("id_state")));
             State.selectByValue("10");
             WebElement Zip = driver.findElement(By.id("postcode"));
-            Zip.sendKeys("arvici");
+            Zip.sendKeys("11383");
             WebElement phone  = driver.findElement(By.id("phone_mobile"));
             phone.sendKeys("555555555");
             WebElement alias = driver.findElement(By.id("alias"));
             alias.sendKeys("13th Street 47 W");
             WebElement Register = driver.findElement(By.id("submitAccount"));
             Register.click();
+            WebElement processAddress = driver.findElement(By.name("processAddress"));
+            js.executeScript("arguments[0].click();", processAddress);
+            wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name("processCarrier"))));
         }catch (Exception e){
             //Sign in
             WebElement Email = driver.findElement(By.id("email"));
-            Email.sendKeys("lukakavtaradze2001@gmail.com");
+            Email.sendKeys(newEmail);
             WebElement Password = driver.findElement(By.id("passwd"));
             Password.sendKeys("arvici123");
             WebElement Sign_in = driver.findElement(By.id("SubmitLogin"));
             Sign_in.click();
+            WebElement processAddress = driver.findElement(By.name("processAddress"));
+            js.executeScript("arguments[0].click();", processAddress);
+            wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name("processCarrier"))));
         }
-        WebElement processAddress = driver.findElement(By.name("processAddress"));
-        js.executeScript("arguments[0].click();", processAddress);
-        wait.until(ExpectedConditions.visibilityOf(driver.findElement(By.name("processCarrier"))));
         try {
         WebElement processCarrier = driver.findElement(By.name("processCarrier"));
         js.executeScript("arguments[0].click();", processCarrier);
@@ -177,7 +183,7 @@ public class Shopping {
                 throw new Error();
             }
         }
-        catch (org.openqa.selenium.NoSuchElementException e) {
+        catch (NoSuchElementException e) {
             driver.navigate().refresh();
             js.executeScript("document.getElementById('cgv').checked=true");
             WebElement processCarrier = driver.findElement(By.name("processCarrier"));
@@ -203,7 +209,7 @@ public class Shopping {
         Select heading = new Select(driver.findElement(By.id("id_contact")));
         heading.selectByValue("2");
         Select reference = new Select(driver.findElement(By.name("id_order")));
-        reference.selectByValue("271209");
+        reference.selectByIndex(1);
         String filePath = System.getProperty("user.dir") + "/src/main/resources/test.txt";
         driver.findElement(By.cssSelector("input[type=\"file\"]")).sendKeys(filePath);
         WebElement Message = driver.findElement(By.id("message"));
